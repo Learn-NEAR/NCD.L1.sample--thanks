@@ -1,4 +1,4 @@
-import { u128 } from "near-sdk-as";
+import { Context, u128 } from "near-sdk-as";
 
 /**
  * == TYPES ====================================================================
@@ -74,4 +74,13 @@ export function asNEAR(amount: u128): string {
  */
 export function toYocto(amount: number): u128 {
   return u128.mul(ONE_NEAR, u128.from(amount))
+}
+
+/**
+ * Function to assert that the contract has called itself
+ */
+export function assert_self(): void {
+  const caller = Context.predecessor
+  const self = Context.contractName
+  assert(caller == self, "Only this contract may call itself");
 }

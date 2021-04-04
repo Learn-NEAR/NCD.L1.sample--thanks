@@ -26,12 +26,14 @@ echo --------------------------------------------
 echo
 echo "redeploying the contract"
 echo
-near dev-deploy ./build/release/sample.wasm
+near dev-deploy ./build/release/thanks.wasm
 
 echo --------------------------------------------
 echo run the following commands
 echo
-echo 'export CONTRACT=__new_contract_account_id__'
+echo 'export CONTRACT=<dev-123-456>'
+echo 'export OWNER=<your own account>'
+echo "near call \$CONTRACT init '{\"owner\":\"'\$OWNER'\"}' --accountId \$CONTRACT"
 echo
 echo
 
