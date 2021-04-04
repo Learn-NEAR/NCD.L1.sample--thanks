@@ -16,7 +16,7 @@ echo --------------------------------------------
 echo
 echo "creating a subaccount under $OWNER"
 echo
-NEAR_ENV=$NETWORK near create-account thanks.$OWNER --masterAccount=$OWNER
+NEAR_ENV=$NETWORK near create-account thanks.$OWNER --masterAccount=$OWNER --initialBalance "1"
 
 echo --------------------------------------------
 echo
