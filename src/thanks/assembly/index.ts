@@ -1,5 +1,5 @@
-import { Context, u128 } from "near-sdk-core"
-import { AccountId } from "../../utils"
+import { Context, ContractPromiseBatch, logging, u128 } from "near-sdk-core"
+import { AccountId, XCC_GAS, assert_self, assert_single_promise_success } from "../../utils"
 import { Message, ContributionTracker, Vector } from "./models"
 
 @nearBindgen
@@ -25,7 +25,7 @@ export class Contract {
     const contribution = Context.attachedDeposit
 
     if (contribution > u128.Zero) {
-      this.contributions.update_average(contribution)
+      this.contributions.update(contribution)
     }
 
     messages.pushBack(new Message(message, anonymous, contribution))
@@ -41,8 +41,33 @@ export class Contract {
     return messages.get_last(10)
   }
 
-  summarize(): ContributionTracker {
-    return this.contributions
+  @mutateState()
+  summarize(): Contract {
+    this.assert_owner()
+    return this
+  }
+
+  transfer(): void {
+    this.assert_owner()
+
+    assert(this.contributions.received > u128.Zero, "No received (pending) funds to be transferred")
+
+    const to_self = Context.contractName
+    const to_owner = ContractPromiseBatch.create(this.owner)
+
+    // transfer earnings to owner then confirm transfer complete
+    const promise = to_owner.transfer(this.contributions.received)
+    promise.then(to_self).function_call("on_transfer_complete", '{}', u128.Zero, XCC_GAS)
+  }
+
+  @mutateState()
+  on_transfer_complete(): void {
+    assert_self()
+    assert_single_promise_success()
+
+    logging.log("transfer complete")
+    // reset contribution tracker
+    this.contributions.record_transfer()
   }
 
   // --------------------------------------------------------------------------
@@ -60,7 +85,7 @@ export class Contract {
 /**
  * TODO: resolve this issue
  *
- * when messages is added as a private member of the Contract, this error is thrown on build
+ * when `messages` is added as a private member of the Contract, this error is thrown on build
  *
  * ERROR TS2322: Type '~lib/near-sdk-core/collections/persistentVector/PersistentVector<src/sample/assembly/models/Message
  * >' is not assignable to type 'src/sample/assembly/models/Vector<src/sample/assembly/models/Message>'.

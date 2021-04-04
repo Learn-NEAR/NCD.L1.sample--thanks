@@ -27,11 +27,22 @@ export class ContributionTracker {
   public count: u32 = 0;
   public total: u128 = u128.Zero;
   public average: f64;
+  public received: u128 = u128.Zero
+  public transferred: u128 = u128.Zero
 
-  update_average(value: u128): void {
+  update(value: u128): void {
+    // track money received separately
+    this.received = u128.add(this.received, value);
+
+    // update tracking data
     this.count += 1;
     this.total = u128.add(this.total, value);
     this.average = u128.div(this.total, u128.from(this.count)).toF64();
+  }
+
+  record_transfer(): void {
+    this.transferred = u128.add(this.transferred, this.received)
+    this.received = u128.Zero
   }
 }
 
