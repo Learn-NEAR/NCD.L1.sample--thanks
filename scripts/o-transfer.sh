@@ -11,4 +11,4 @@ echo
 echo \$CONTRACT is $CONTRACT
 echo \$OWNER is $OWNER
 echo
-near call $CONTRACT transfer --account_id $OWNER
+NEAR_ENV=$NETWORK near call $CONTRACT transfer --account_id $OWNER

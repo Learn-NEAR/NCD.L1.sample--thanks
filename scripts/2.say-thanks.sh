@@ -13,4 +13,4 @@ echo \$SPEAKER is $SPEAKER
 echo \$1 is [ "$1" ] '(the message)'
 echo \$2 is [ $2 NEAR ] '(optionally attached amount)'
 echo
-near call $CONTRACT say '{"message":"'$1'"}' --account_id $SPEAKER --amount $2
+NEAR_ENV=$NETWORK near call $CONTRACT say '{"message":"'$1'"}' --account_id $SPEAKER --amount $2
