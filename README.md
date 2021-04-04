@@ -10,7 +10,7 @@ Of course keep in mind that your signing account will be visible on the blockcha
 
 ```ts
 // ------------------------------------
-// public methods
+// contract initialization
 // ------------------------------------
 
 /**

@@ -1,6 +1,9 @@
 import { Context, ContractPromiseBatch, logging, u128 } from "near-sdk-core"
-import { AccountId, XCC_GAS, assert_self, assert_single_promise_success } from "../../utils"
+import { AccountId, ONE_NEAR, XCC_GAS, assert_self, assert_single_promise_success } from "../../utils"
 import { Message, ContributionTracker, Vector } from "./models"
+
+// max 5 NEAR accepted to this contract before it forces a transfer to the owner
+const CONTRIBUTION_SAFETY_LIMIT: u128 = u128.mul(ONE_NEAR, u128.from(5));
 
 @nearBindgen
 export class Contract {
@@ -15,6 +18,11 @@ export class Contract {
 
   @mutateState()
   say(message: string, anonymous: bool = false): bool {
+    // guard against too much money being deposited to this account in beta
+    const deposit = Context.attachedDeposit
+    this.assert_financial_safety_limits(deposit)
+
+    // guard against invalid message size
     assert(message.length > 0, "Message length cannot be 0")
     assert(message.length < Message.max_length(), "Message length is too long, must be less than " + Message.max_length().toString() + " characters.")
 
@@ -22,13 +30,11 @@ export class Contract {
       assert(!anonymous, "Anonymous messages are not allowed by this contract")
     }
 
-    const contribution = Context.attachedDeposit
-
-    if (contribution > u128.Zero) {
-      this.contributions.update(contribution)
+    if (deposit > u128.Zero) {
+      this.contributions.update(deposit)
     }
 
-    messages.pushBack(new Message(message, anonymous, contribution))
+    messages.pushBack(new Message(message, anonymous, deposit))
     return true
   }
 
@@ -77,6 +83,12 @@ export class Contract {
   private assert_owner(): void {
     const caller = Context.predecessor
     assert(this.owner == caller, "Only the owner of this contract may call this method")
+  }
+
+  private assert_financial_safety_limits(deposit: u128): void {
+    const new_total = u128.add(deposit, this.contributions.received)
+    assert(u128.le(deposit, CONTRIBUTION_SAFETY_LIMIT), "You are trying to attach too many NEAR Tokens to this call.  There is a safe limit while in beta of 5 NEAR")
+    assert(u128.le(new_total, CONTRIBUTION_SAFETY_LIMIT), "Maximum contributions reached.  Please call transfer() to continue receiving funds.")
   }
 
 }
