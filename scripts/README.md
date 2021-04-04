@@ -38,11 +38,19 @@ It uses the following setup:
   ```
 
 - Commands
+
+  _Owner scripts_
   ```sh
-  1.init.sh               # cleanup, compile and deploy contract
-  2.run.sh                # call methods on the deployed contract
+  1.dev-deploy.sh         # cleanup, compile and deploy contract
+  o-report.sh             # generate a summary report of the contract state
+  o-transfer.sh           # transfer received funds to the owner account
   ```
 
+  _Public scripts_
+  ```sh
+  2.say-thanks.sh         # post a message saying thank you, optionally attaching NEAR tokens
+  2.say-anon-thanks.sh    # post an anonymous message (otherwise same as above)
+  ```
 ### Terminal **B**
 
 *This window is used to render the contract account storage*
@@ -75,4 +83,4 @@ It uses the following setup:
 
 ### Windows
 
-- Consider this article: [What is the Windows analog of the Linux watch command?](https://superuser.com/questions/191063/what-is-the-windows-analog-of-the-linux-watch-command#191068)
+- Consider this article: [What is the Windows analog of the Linux watch command?](https://superuser.com/questions/191063/what-is-the-windows-analog-of-the-linuo-watch-command#191068)
