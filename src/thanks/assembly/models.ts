@@ -49,6 +49,7 @@ export class ContributionTracker {
 /**
  * setup a generic subclass instead of duplicating the get_last method
  */
+@nearBindgen
 export class Vector<T> extends PersistentVector<T> {
   /**
    * this method isn't normally available on a PersistentVector

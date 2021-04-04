@@ -9,6 +9,7 @@ const CONTRIBUTION_SAFETY_LIMIT: u128 = u128.mul(ONE_NEAR, u128.from(5));
 export class Contract {
   private owner: AccountId
   private allow_anonymous: bool
+  private messages: Vector<Message> = new Vector<Message>("m")
   private contributions: ContributionTracker = new ContributionTracker()
 
   constructor(owner: AccountId, allow_anonymous: bool = true) {
@@ -34,7 +35,7 @@ export class Contract {
       this.contributions.update(deposit)
     }
 
-    messages.pushBack(new Message(message, anonymous, deposit))
+    this.messages.pushBack(new Message(message, anonymous, deposit))
     return true
   }
 
@@ -44,7 +45,7 @@ export class Contract {
 
   list(): Array<Message> {
     this.assert_owner()
-    return messages.get_last(10)
+    return this.messages.get_last(10)
   }
 
   @mutateState()
@@ -92,14 +93,3 @@ export class Contract {
   }
 
 }
-
-
-/**
- * TODO: resolve this issue
- *
- * when `messages` is added as a private member of the Contract, this error is thrown on build
- *
- * ERROR TS2322: Type '~lib/near-sdk-core/collections/persistentVector/PersistentVector<src/sample/assembly/models/Message
- * >' is not assignable to type 'src/sample/assembly/models/Vector<src/sample/assembly/models/Message>'.
- */
-const messages: Vector<Message> = new Vector<Message>("m")
