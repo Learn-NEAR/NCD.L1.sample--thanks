@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
+[ -z "$NEAR_ENV"] && echo "Missing \$NEAR_ENV environment variable" && exit 1
 [ -z "$OWNER" ] && echo "Missing \$OWNER environment variable" && exit 1
-[ -z "$NETWORK" ] && echo "Missing \$NETWORK environment variable" && exit 1
+
 
 # exit on first error after this point
 set -e
@@ -16,12 +17,12 @@ echo --------------------------------------------
 echo
 echo "creating a subaccount under $OWNER"
 echo
-NEAR_ENV=$NETWORK near create-account thanks.$OWNER --masterAccount=$OWNER --initialBalance "1"
+near create-account thanks.$OWNER --masterAccount=$OWNER --initialBalance "1"
 
 echo --------------------------------------------
 echo
 echo "deploying and initializing the contract in a single transaction"
 echo
-NEAR_ENV=$NETWORK near deploy --accountId=thanks.$OWNER --wasmFile=./build/release/thanks.wasm --initFunction 'init' --initArgs '{"owner":"'$OWNER'"}'
+near deploy --accountId=thanks.$OWNER --wasmFile=./build/release/thanks.wasm --initFunction 'init' --initArgs '{"owner":"'$OWNER'"}'
 
 exit 0

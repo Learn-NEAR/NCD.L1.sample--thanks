@@ -86,11 +86,11 @@ It is recommended that you deploy the contract to a subaccount under your MainNe
 2. run `./scripts/x-deploy.sh` to rebuild, deploy and initialize the contract to a target account
 
    requires the following environment variables
-   - NETWORK: Either TestNet or MainNet
-   - OWNER: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
+   - `NEAR_ENV`: Either `testnet` or `mainnet`
+   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
 
 3. run `./scripts/x-remove.sh` to delete the account
 
    requires the following environment variables
-   - NETWORK: Either TestNet or MainNet
-   - OWNER: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
+   - `NEAR_ENV`: Either `testnet` or `mainnet`
+   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
