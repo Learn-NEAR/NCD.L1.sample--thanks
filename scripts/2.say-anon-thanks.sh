@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-[ -z "$NEAR_ENV"] && echo "Missing \$NEAR_ENV environment variable" && exit 1
+[ -z "$NEAR_ENV" ] && echo "Missing \$NEAR_ENV environment variable" && exit 1
 [ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable" && exit 1
 [ -z "$SPEAKER" ] && echo "Missing \$SPEAKER environment variable" && exit 1
 

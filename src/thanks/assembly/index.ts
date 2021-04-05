@@ -48,7 +48,6 @@ export class Contract {
     return messages.get_last(10)
   }
 
-  @mutateState()
   summarize(): Contract {
     this.assert_owner()
     return this
