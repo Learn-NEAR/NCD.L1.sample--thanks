@@ -6,6 +6,10 @@ You can optionally attach tokens to your message, or even leave an anonymous tip
 
 Of course keep in mind that your signing account will be visible on the blockchain via NEAR Explorer even if you send an anonymous message.
 
+## ⚠️ Warning
+
+Any content produced by NEAR, or developer resources that NEAR provides, are for educational and inspiration purposes only.  NEAR does not encourage, induce or sanction the deployment of any such applications in violation of applicable laws or regulations.
+
 ## Contract
 
 ```ts
