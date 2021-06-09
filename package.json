@@ -10,12 +10,13 @@
     "build:release": "asb",
     "test": "yarn build:release && yarn test:unit && yarn test:simulate",
     "test:simulate": "cargo test -- --nocapture",
-    "clean": "rm -rf ./build && rm -rf ./neardev && rm -rf ./target"
+    "clean": "rm -rf ./build && rm -rf ./neardev && rm -rf ./target",
+    "deploy":"yarn build:release && near deploy && gh-pages -d build/"
   },
   "keywords": [],
   "author": "hello@near.org",
   "license": "ISC",
   "devDependencies": {
-    "near-sdk-as": "^3.1.0"
+    "near-sdk-as": "^3.2.0"
   }
 }

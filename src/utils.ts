@@ -36,7 +36,7 @@ export type Timestamp = u64;
  * XCC_GAS = gas for cross-contract calls, ~5 Tgas (teragas = 1e12) per "hop"
  * MIN_ACCOUNT_BALANCE = 3 NEAR min to keep account alive via storage staking
  *
- * TODO: revist MIN_ACCOUNT_BALANCE after some real data is included b/c this
+ * TODO: revisit MIN_ACCOUNT_BALANCE after some real data is included b/c this
  *  could end up being much higher
  */
 
