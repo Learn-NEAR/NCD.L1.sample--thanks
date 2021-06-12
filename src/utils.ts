@@ -1,4 +1,4 @@
-import { u128, Context, ContractPromise } from "near-sdk-as";
+import { u128, Context, ContractPromise, env } from "near-sdk-as";
 
 /**
  * == TYPES ====================================================================
@@ -42,7 +42,7 @@ export type Timestamp = u64;
 
 export const ONE_NEAR = u128.from("1000000000000000000000000");
 export const XCC_GAS: Gas = 20_000_000_000_000;
-export const MIN_ACCOUNT_BALANCE: u128 = u128.mul(ONE_NEAR, u128.from(3));
+export const MIN_ACCOUNT_BALANCE: u128 = u128.mul(ONE_NEAR, u128.from(0.1));
 
 /**
  * == FUNCTIONS ================================================================
@@ -89,4 +89,8 @@ export function assert_single_promise_success(): void {
   const x = ContractPromise.getResults()
   assert(x.length == 1, "Expected exactly one promise result")
   assert(x[0].succeeded, "Expected PromiseStatus to be successful")
+}
+
+export function is_valid_account(account: string): bool {
+  return env.isValidAccountID(account)
 }

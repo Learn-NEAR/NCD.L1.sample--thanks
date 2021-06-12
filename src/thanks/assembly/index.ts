@@ -1,5 +1,5 @@
 import { Context, ContractPromiseBatch, logging, u128 } from "near-sdk-core"
-import { AccountId, ONE_NEAR, XCC_GAS, assert_self, assert_single_promise_success } from "../../utils"
+import { AccountId, ONE_NEAR, XCC_GAS, assert_self, assert_single_promise_success, is_valid_account } from "../../utils"
 import { Message, ContributionTracker, Vector } from "./models"
 
 // max 5 NEAR accepted to this contract before it forces a transfer to the owner
@@ -12,9 +12,13 @@ export class Contract {
   // private messages: Vector<Message> = new Vector<Message>("m")
   private contributions: ContributionTracker = new ContributionTracker()
 
-  constructor(owner: AccountId, allow_anonymous: bool = true) {
+  constructor(owner: AccountId, registry: string = '', allow_anonymous: bool = true) {
     this.owner = owner
     this.allow_anonymous = allow_anonymous
+
+    if (is_valid_account(registry)) {
+      this.register_self(registry)
+    }
   }
 
   @mutateState()
@@ -76,9 +80,28 @@ export class Contract {
     this.contributions.record_transfer()
   }
 
+  @mutateState()
+  on_registered(): void {
+    assert_self()
+    assert_single_promise_success()
+
+    logging.log("registration complete")
+  }
+
   // --------------------------------------------------------------------------
   // Private methods
   // --------------------------------------------------------------------------
+
+  private register_self(registry: string): void {
+    const to_registry = ContractPromiseBatch.create(registry)
+    const to_self = Context.contractName
+
+    // register this contract with registry
+    const register = to_registry.function_call('register', '{}', u128.Zero, XCC_GAS)
+
+    // confirm successful registration
+    register.then(to_self).function_call('on_registered', '{}', u128.Zero, XCC_GAS)
+  }
 
   private assert_owner(): void {
     const caller = Context.predecessor

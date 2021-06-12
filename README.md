@@ -18,7 +18,7 @@ Of course keep in mind that your signing account will be visible on the blockcha
  *
  * (note: this method is called "constructor" in the singleton contract code)
  */
-function init(owner: AccountId, allow_anonymous: bool = true): void
+function init(owner: AccountId, registry: string = '', allow_anonymous: bool = true): void
 
 // ------------------------------------
 // public methods

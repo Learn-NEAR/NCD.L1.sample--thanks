@@ -1,5 +1,6 @@
 {
   "workspaces": [
-    "src/thanks"
+    "src/thanks",
+    "src/registry"
   ]
 }
