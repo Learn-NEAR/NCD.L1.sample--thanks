@@ -34,6 +34,7 @@ echo
 echo 'export CONTRACT=<dev-123-456>'
 echo 'export OWNER=<your own account>'
 echo "near call \$CONTRACT init '{\"owner\":\"'\$OWNER'\"}' --accountId \$CONTRACT"
+echo "near call \$CONTRACT init '{\"owner\":\"'\$OWNER'\", \"registry\":\"'\$REGISTRY'\"}' --accountId \$CONTRACT"
 echo
 echo
 

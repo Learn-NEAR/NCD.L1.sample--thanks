@@ -8,11 +8,12 @@ const CONTRIBUTION_SAFETY_LIMIT: u128 = u128.mul(ONE_NEAR, u128.from(5));
 @nearBindgen
 export class Contract {
   private owner: AccountId
+  private registry: AccountId
   private allow_anonymous: bool
   // private messages: Vector<Message> = new Vector<Message>("m")
   private contributions: ContributionTracker = new ContributionTracker()
 
-  constructor(owner: AccountId, registry: string = '', allow_anonymous: bool = true) {
+  constructor(owner: AccountId, registry: AccountId = '', allow_anonymous: bool = true) {
     this.owner = owner
     this.allow_anonymous = allow_anonymous
 
@@ -81,11 +82,12 @@ export class Contract {
   }
 
   @mutateState()
-  on_registered(): void {
+  on_registered(registry: AccountId): void {
     assert_self()
     assert_single_promise_success()
 
     logging.log("registration complete")
+    this.registry = registry
   }
 
   // --------------------------------------------------------------------------
@@ -100,7 +102,7 @@ export class Contract {
     const register = to_registry.function_call('register', '{}', u128.Zero, XCC_GAS)
 
     // confirm successful registration
-    register.then(to_self).function_call('on_registered', '{}', u128.Zero, XCC_GAS)
+    register.then(to_self).function_call('on_registered', new CallbackArgs(registry), u128.Zero, XCC_GAS)
   }
 
   private assert_owner(): void {
@@ -118,3 +120,8 @@ export class Contract {
 
 
 const messages: Vector<Message> = new Vector<Message>("m")
+
+@nearBindgen
+class CallbackArgs {
+  constructor(public registry: AccountId) { }
+}

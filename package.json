@@ -10,7 +10,7 @@
     "build:release": "asb",
     "test": "yarn build:release && yarn test:unit && yarn test:simulate",
     "test:simulate": "cargo test -- --nocapture",
-    "clean": "rm -rf ./build && rm -rf ./neardev && rm -rf ./target"
+    "clean": "rm -rf ./build && rm -rf ./neardev && rm -rf ./neardev-registry && rm -rf ./target"
   },
   "keywords": [],
   "author": "hello@near.org",

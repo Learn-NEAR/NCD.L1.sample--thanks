@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 
-[ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable"
+[ -z "$REGISTRY" ] && echo "Missing \$REGISTRY environment variable"
+[ -z "$OWNER" ] && echo "Missing \$OWNER environment variable"
 
+echo "deleting $REGISTRY and setting $OWNER as beneficiary"
+echo
+near delete $REGISTRY $OWNER
+
+echo --------------------------------------------
+echo
+echo "cleaning up the /neardev folder"
+echo
+rm -rf ./neardev
 # exit on first error after this point to avoid redeploying with successful build
 set -e
 
