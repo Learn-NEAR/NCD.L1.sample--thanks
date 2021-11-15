@@ -1,100 +1,55 @@
-# Thanks
+# Allowance
 
-Say "thanks!" to other students of the NCD by calling _their_ instance of this contract.
-
-You can optionally attach tokens to your message, or even leave an anonymous tip.
-
-Of course keep in mind that your signing account will be visible on the blockchain via NEAR Explorer even if you send an anonymous message.
+Allow a guardian to add funds that can be transferred by the dependent.  The guardian can optionally specify the intended recipient when
+adding funds.  If no recipient is specified, it increases the "unrestricted balance", money that the dependent can send
+to any address.
 
 ## ⚠️ Warning
 
 Any content produced by NEAR, or developer resources that NEAR provides, are for educational and inspiration purposes only.  NEAR does not encourage, induce or sanction the deployment of any such applications in violation of applicable laws or regulations.
 
-## Contract
+## Setup
+1. clone this repo locally
+2. run `yarn`
 
-```ts
-// ------------------------------------
-// contract initialization
-// ------------------------------------
+## Development Deployment
 
-/**
- * initialize contract with owner ID and other config data
- *
- * (note: this method is called "constructor" in the singleton contract code)
- */
-function init(owner: AccountId, allow_anonymous: bool = true): void
-
-// ------------------------------------
-// public methods
-// ------------------------------------
-
-/**
- * give thanks to the owner of the contract
- * and optionally attach tokens
- */
-function say(message: string, anonymous: bool): bool
-
-// ------------------------------------
-// owner methods
-// ------------------------------------
-
-/**
- * show all messages and users
- */
-function list(): Array<Message>
-
-/**
- * generate a summary report
- */
-function summarize(): Contract
-
-/**
- * transfer received funds to owner account
- */
-function transfer(): void
-```
-
+1. run `./scripts/1.dev-deploy.sh` to deploy the contract (this uses `near dev-deploy`).  Follow the command's output for setting environment variables and calling the `init` (constructor) method
+2. run `./scripts/4.dev-cleanup.sh` to delete the dev contract.
 
 ## Usage
+Ensure `NEAR_ENV`, `DEPENDENT`, and `GUARDIAN` environment variables are set.
 
-### Development
+### Add funds (logged in as the guardian)
+- **method:** `addFunds(recipient: AccountId): bool`
+- **script:** `./scripts/2.g-add-funds.sh AMOUNT [RECIPIENT]`
+- **example:** `./scripts/2.g-add-funds.sh 2`
+- **example:** `./scripts/2.g-add-funds.sh 5 account.testnet`
 
-To deploy the contract for development, follow these steps:
+### Transfer funds (logged in as the dependent)
+- **method:** `transfer(recipient: AccountId, amount: Amount): void`
+- **script:** `./scripts/3.d-transfer.sh RECIPIENT AMOUNT`
+- **example:** `./scripts/3.d-transfer.sh account.testnet 5000000000000000000000000`
 
-1. clone this repo locally
-2. run `./scripts/1.dev-deploy.sh` to deploy the contract (this uses `near dev-deploy`)
+### View contract storage (logged in as the guardian or dependent)
+Because this can be called by guardian or dependent, you must specify the caller.  Funds added with a targetted recipient
+are not available for view.  This may be a future enhancement.
+- **method:** `summerize(): Contract`
+- **script:** `./scripts/report.sh ACCOUNT`
+- **example:** `./scripts/report.sh guardian.testnet`
 
-**Your contract is now ready to use.**
+## Production Deployment
 
-To use the contract you can do any of the following:
-
-_Public scripts_
-
-```sh
-2.say-thanks.sh         # post a message saying thank you, optionally attaching NEAR tokens
-2.say-anon-thanks.sh    # post an anonymous message (otherwise same as above)
-```
-
-_Owner scripts_
-
-```sh
-o-report.sh             # generate a summary report of the contract state
-o-transfer.sh           # transfer received funds to the owner account
-```
-
-### Production
-
-It is recommended that you deploy the contract to a subaccount under your MainNet account to make it easier to identify you as the owner
-
-1. clone this repo locally
-2. run `./scripts/x-deploy.sh` to rebuild, deploy and initialize the contract to a target account
+1. run `./scripts/x-deploy.sh` to rebuild, deploy and initialize the contract to a target account
 
    requires the following environment variables
    - `NEAR_ENV`: Either `testnet` or `mainnet`
-   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
+   - `DEPENDENT`: The owner of the contract and the parent account.  The contract will be deployed to `allowance.$DEPENDENT`.
+   - `GUARDIAN`: The guardian is the only account allowed to add funds.
 
-3. run `./scripts/x-remove.sh` to delete the account
+2. run `./scripts/x-remove.sh` to delete the account
 
    requires the following environment variables
    - `NEAR_ENV`: Either `testnet` or `mainnet`
-   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
+   - `DEPENDENT`: The contract will be deleted from `allowance.$DEPENDENT`
+   - `GUARDIAN`: The guardian will be the beneficiary of the deleted account.

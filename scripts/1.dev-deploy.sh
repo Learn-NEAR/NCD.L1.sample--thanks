@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 [ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable"
-[ -z "$OWNER" ] && echo "Missing \$OWNER environment variable"
+[ -z "$GUARDIAN" ] && echo "Missing \$GUARDIAN environment variable"
+[ -z "$DEPENDENT" ] && echo "Missing \$DEPENDENT environment variable"
 
-echo "deleting $CONTRACT and setting $OWNER as beneficiary"
+echo "deleting $CONTRACT and setting $GUARDIAN as beneficiary"
 echo
-near delete $CONTRACT $OWNER
+near delete $CONTRACT $GUARDIAN
 
 echo --------------------------------------------
 echo
@@ -26,14 +27,16 @@ echo --------------------------------------------
 echo
 echo "redeploying the contract"
 echo
-near dev-deploy ./build/release/thanks.wasm
+near dev-deploy ./build/release/allowance.wasm
 
 echo --------------------------------------------
 echo run the following commands
 echo
+echo 'export NEAR_ENV=<testnet | mainnet>'
 echo 'export CONTRACT=<dev-123-456>'
-echo 'export OWNER=<your own account>'
-echo "near call \$CONTRACT init '{\"owner\":\"'\$OWNER'\"}' --accountId \$CONTRACT"
+echo 'export GUARDIAN=<the guardian account>'
+echo 'export DEPENDENT=<the minor account>'
+echo "near call \$CONTRACT init '{\"guardian\":\"'\$GUARDIAN'\",\"dependent\":\"'\$DEPENDENT'\"}' --accountId \$CONTRACT"
 echo
 echo
 

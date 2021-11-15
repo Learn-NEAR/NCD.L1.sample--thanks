@@ -1,7 +1,7 @@
 {
-  "name": "starter--assemblyscript",
+  "name": "near-sample--allowance",
   "version": "0.0.1",
-  "description": "Starter project for writing AssemblyScript contracts for NEAR Protocol",
+  "description": "An example project of NEAR Protocol contracts written in AssemblyScript",
   "scripts": {
     "dev": "watch -d -n 1 'clear && yarn test:unit'",
     "asp": "asp --verbose --nologo",
