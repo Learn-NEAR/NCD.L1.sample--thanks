@@ -22,9 +22,7 @@ export class Contract {
     const deposit = Context.attachedDeposit
 
     if (recipient) {
-      const prevBalance = allowanceByRecipient.contains(recipient)
-        ? allowanceByRecipient.get(recipient, u128.Zero) as u128
-        : u128.Zero
+      const prevBalance = allowanceByRecipient.get(recipient, u128.Zero) as u128
       allowanceByRecipient.set(recipient, u128.add(prevBalance, deposit))
     } else {
       this.unrestrictedAllowance = u128.add(this.unrestrictedAllowance, deposit)
@@ -48,7 +46,7 @@ export class Contract {
     assert(availableFunds >= amount, "Insufficient funds available for this recipient")
 
     // Persist remaining funds amount
-    // If 0 funds remain, remove recipient from mapping
+    // If no funds remain, remove recipient from mapping
     const remainingFunds = u128.sub(availableFunds, amount)
     if (useUnrestrictedAllowance) {
       this.unrestrictedAllowance = remainingFunds
@@ -74,13 +72,6 @@ export class Contract {
     return recipient
       ? allowanceByRecipient.get(recipient, u128.Zero) as u128
       : this.unrestrictedAllowance
-    // if (!recipient) {
-    //   return this.unrestrictedAllowance;
-    // } else if (!allowanceByRecipient.contains(recipient)) {
-    //   return u128.Zero
-    // } else {
-    //   return allowanceByRecipient.get(recipient, u128.Zero) as u128
-    // }
   }
 
   summarize(): Contract {
