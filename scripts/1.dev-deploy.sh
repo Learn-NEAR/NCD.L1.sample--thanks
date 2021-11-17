@@ -6,7 +6,7 @@
 
 echo "deleting $CONTRACT and setting $GUARDIAN as beneficiary"
 echo
-near delete $CONTRACT $GUARDIAN
+[ -n "$CONTRACT" ] && near delete $CONTRACT $GUARDIAN
 
 echo --------------------------------------------
 echo
