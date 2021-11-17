@@ -16,12 +16,12 @@ export class Contract {
   // Guardian methods
   // ----------------------------------------------------------------------------
   @mutateState()
-  addFunds(recipient: AccountId = ''): bool {
+  addFunds(recipient: AccountId | null): bool {
     this.assert_guardian()
 
     const deposit = Context.attachedDeposit
 
-    if (recipient != '') {
+    if (recipient) {
       const prevBalance = allowanceByRecipient.contains(recipient)
         ? allowanceByRecipient.get(recipient, u128.Zero) as u128
         : u128.Zero
@@ -69,6 +69,20 @@ export class Contract {
   // ----------------------------------------------------------------------------
   // Dependent and Guardian methods
   // ----------------------------------------------------------------------------
+  reportFunds(recipient: AccountId | null): u128 {
+    this.assert_dependent_or_guardian()
+    return recipient
+      ? allowanceByRecipient.get(recipient, u128.Zero) as u128
+      : this.unrestrictedAllowance
+    // if (!recipient) {
+    //   return this.unrestrictedAllowance;
+    // } else if (!allowanceByRecipient.contains(recipient)) {
+    //   return u128.Zero
+    // } else {
+    //   return allowanceByRecipient.get(recipient, u128.Zero) as u128
+    // }
+  }
+
   summarize(): Contract {
     this.assert_dependent_or_guardian()
     return this

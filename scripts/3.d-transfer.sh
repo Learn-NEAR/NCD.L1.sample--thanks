@@ -5,12 +5,14 @@ set -e
 [ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable" && exit 1
 [ -z "$DEPENDENT" ] && echo "Missing \$DEPENDENT environment variable" && exit 1
 
+echo "\$CONTRACT is $CONTRACT"
+echo "\$DEPENDENT is $DEPENDENT"
+echo "\$1 is [ $1 ]"
+echo "\$2 is [ $2 ]"
+
 echo
 echo 'About to call transfer() on the contract'
-echo near call \$CONTRACT transfer --account_id \$DEPENDENT
+echo "near call \$CONTRACT transfer '{\"recipient\":\"'$1'\",\"amount\":\"'$2'\"}' --accountId \$DEPENDENT --gas 40000000000000"
+near call $CONTRACT transfer '{"recipient":"'$1'","amount":"'$2'"}' --accountId $DEPENDENT --gas 40000000000000
 echo
-echo \$CONTRACT is $CONTRACT
-echo \recipient is $1
-echo \amount is $2
 echo
-near call $CONTRACT transfer '{"recipient":"'$1'","amount":"'$2'"}' --account_id $DEPENDENT --gas 40000000000000

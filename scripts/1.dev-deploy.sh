@@ -35,7 +35,7 @@ echo
 echo 'export NEAR_ENV=<testnet | mainnet>'
 echo 'export CONTRACT=<dev-123-456>'
 echo 'export GUARDIAN=<the guardian account>'
-echo 'export DEPENDENT=<the minor account>'
+echo 'export DEPENDENT=<the dependent account>'
 echo "near call \$CONTRACT init '{\"guardian\":\"'\$GUARDIAN'\",\"dependent\":\"'\$DEPENDENT'\"}' --accountId \$CONTRACT"
 echo
 echo

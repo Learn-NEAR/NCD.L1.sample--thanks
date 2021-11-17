@@ -5,13 +5,20 @@ set -e
 [ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable" && exit 1
 [ -z "$GUARDIAN" ] && echo "Missing \$GUARDIAN environment variable" && exit 1
 
+echo "\$CONTRACT is $CONTRACT"
+echo "\$GUARDIAN is $GUARDIAN"
+echo "\$1 is [ $1 NEAR]"
+echo "\$2 is [ $2 ] (optional)"
+
 echo
 echo 'About to call addFunds() on the contract'
-echo near call \$CONTRACT addFunds '{"recipient":"'"$2"'"}' --account_id \$GUARDIAN --amount \$1
+
+if [ -n "$2" ]; then
+    echo "near call \$CONTRACT addFunds '{\"recipient\":\"'\$2'\"}' --accountId \$GUARDIAN --amount \$1"
+    near call $CONTRACT addFunds '{"recipient":"'$2'"}' --accountId $GUARDIAN --amount $1
+else
+    echo "near call \$CONTRACT addFunds '{\"recipient\":null}' --accountId \$GUARDIAN --amount \$1"
+    near call $CONTRACT addFunds '{"recipient":null}' --accountId $GUARDIAN --amount $1
+fi
 echo
-echo \$CONTRACT is $CONTRACT
-echo \$GUARDIAN is $GUARDIAN
-echo \$1 is [ $1 NEAR] '(the amount)'
-echo \$2 is [ $2 ] '(optional recipient)'
 echo
-near call $CONTRACT addFunds '{"recipient":"'$2'"}' --account_id $GUARDIAN --amount $1

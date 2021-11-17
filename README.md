@@ -31,12 +31,13 @@ Ensure `NEAR_ENV`, `DEPENDENT`, and `GUARDIAN` environment variables are set.
 - **script:** `./scripts/3.d-transfer.sh RECIPIENT AMOUNT`
 - **example:** `./scripts/3.d-transfer.sh account.testnet 5000000000000000000000000`
 
-### View contract storage (logged in as the guardian or dependent)
+### View funds and contract storage (logged in as the guardian or dependent)
 Because this can be called by guardian or dependent, you must specify the caller.  Funds added with a targetted recipient
 are not available for view.  This may be a future enhancement.
 - **method:** `summerize(): Contract`
-- **script:** `./scripts/report.sh ACCOUNT`
-- **example:** `./scripts/report.sh guardian.testnet`
+- **script:** `./scripts/report.sh [RECIPIENT]`
+- **example:** `./scripts/report.sh`; shows the contract summary
+- **example:** `./scripts/report.sh account.testnet`; shows the available funds for this recipient and contract summary
 
 ## Production Deployment
 
