@@ -21,7 +21,7 @@ Any content produced by NEAR, or developer resources that NEAR provides, are for
 Ensure `NEAR_ENV`, `DEPENDENT`, and `GUARDIAN` environment variables are set.
 
 ### Add funds (logged in as the guardian)
-- **method:** `addFunds(recipient: AccountId): bool`
+- **method:** `addFunds(recipient: AccountId | null): bool`
 - **script:** `./scripts/2.g-add-funds.sh AMOUNT [RECIPIENT]`
 - **example:** `./scripts/2.g-add-funds.sh 2`
 - **example:** `./scripts/2.g-add-funds.sh 5 account.testnet`
@@ -32,9 +32,10 @@ Ensure `NEAR_ENV`, `DEPENDENT`, and `GUARDIAN` environment variables are set.
 - **example:** `./scripts/3.d-transfer.sh account.testnet 5000000000000000000000000`
 
 ### View funds and contract storage (logged in as the guardian or dependent)
-Because this can be called by guardian or dependent, you must specify the caller.  Funds added with a targetted recipient
-are not available for view.  This may be a future enhancement.
+View the Contract storage.  If a recipient is included, the script will call the `reportFunds` method to view
+the funds available for transfer to that recipient.
 - **method:** `summerize(): Contract`
+- **method:** `reportFunds(recipient: AccountId | null)`
 - **script:** `./scripts/report.sh [RECIPIENT]`
 - **example:** `./scripts/report.sh`; shows the contract summary
 - **example:** `./scripts/report.sh account.testnet`; shows the available funds for this recipient and contract summary
