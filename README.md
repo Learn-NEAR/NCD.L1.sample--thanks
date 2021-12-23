@@ -62,7 +62,8 @@ function transfer(): void
 To deploy the contract for development, follow these steps:
 
 1. clone this repo locally
-2. run `./scripts/1.dev-deploy.sh` to deploy the contract (this uses `near dev-deploy`)
+2. run `yarn` to install dependencies
+3. run `./scripts/1.dev-deploy.sh` to deploy the contract (this uses `near dev-deploy`)
 
 **Your contract is now ready to use.**
 
