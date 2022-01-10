@@ -12,90 +12,86 @@ Any content produced by NEAR, or developer resources that NEAR provides, are for
 
 ## Contract
 
-```ts
+```rs
 // ------------------------------------
 // contract initialization
 // ------------------------------------
 
-/**
- * initialize contract with owner ID and other config data
- *
- * (note: this method is called "constructor" in the singleton contract code)
- */
-function init(owner: AccountId, allow_anonymous: bool = true): void
+/// Initialize contract with owner ID and other config data
+/// (note: this method is called "constructor" in the singleton contract code)
+pub fn init(owner: AccountId, allow_anonymous: bool) -> Self
 
 // ------------------------------------
 // public methods
 // ------------------------------------
 
-/**
- * give thanks to the owner of the contract
- * and optionally attach tokens
- */
-function say(message: string, anonymous: bool): bool
+/// Give thanks to the owner of the contract and 
+/// optionally attach tokens.
+pub fn say(message: String, anonymous: bool) -> bool
 
 // ------------------------------------
 // owner methods
 // ------------------------------------
 
-/**
- * show all messages and users
- */
-function list(): Array<Message>
+/// Show all messages and users.
+pub fn list() -> Vec<Message> 
 
-/**
- * generate a summary report
- */
-function summarize(): Contract
 
-/**
- * transfer received funds to owner account
- */
-function transfer(): void
+/// Generate a summary report.
+pub fn summarize() -> Contract
+
+/// Transfer received funds to owner account.
+pub fn transfer() -> ()
 ```
 
+## Usage(To do)
+Scripts still need to be updated to a format that doesn't require yarn...
 
-## Usage
+### Add wasm32-unknown-unknown to rust
 
-### Development
+This only needs to be done once for every rustup install:
 
-To deploy the contract for development, follow these steps:
+rustup target add wasm32-unknown-unknown --toolchain nightly
 
-1. clone this repo locally
-2. run `yarn` to install dependencies
-3. run `./scripts/1.dev-deploy.sh` to deploy the contract (this uses `near dev-deploy`)
 
-**Your contract is now ready to use.**
+### Env variables
 
-To use the contract you can do any of the following:
+export ACCOUNT="your-account-id.testnet"
 
-_Public scripts_
+export SUBACCOUNT="your-subaccount-name.your-account-id.testnet"
 
-```sh
-2.say-thanks.sh         # post a message saying thank you, optionally attaching NEAR tokens
-2.say-anon-thanks.sh    # post an anonymous message (otherwise same as above)
-```
+Here's an example: Let's say I have a master account called 'someone.testnet' and want to create a subaccount name 'rust-tests'. The end result will be 'rust-tests.someone.testnet'. In that case we use "someone.testnet" for ACCOUNT, "rust-tests" for SUBACCOUNT.
 
-_Owner scripts_
 
-```sh
-o-report.sh             # generate a summary report of the contract state
-o-transfer.sh           # transfer received funds to the owner account
-```
+### Compile
 
-### Production
+cargo +nightly build --target wasm32-unknown-unknown --release
 
-It is recommended that you deploy the contract to a subaccount under your MainNet account to make it easier to identify you as the owner
+### Login to NEAR
 
-1. clone this repo locally
-2. run `./scripts/x-deploy.sh` to rebuild, deploy and initialize the contract to a target account
+near login
 
-   requires the following environment variables
-   - `NEAR_ENV`: Either `testnet` or `mainnet`
-   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
+### Create account to deploy this contract
 
-3. run `./scripts/x-remove.sh` to delete the account
+near create-account $SUBACCOUNT.$ACCOUNT --masterAccount $ACCOUNT --initialBalance 100
 
-   requires the following environment variables
-   - `NEAR_ENV`: Either `testnet` or `mainnet`
-   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
+### Delete account 
+
+Only when there's no need for the contract. transfer remaining near to $ACCOUNT.
+
+near delete $SUBACCOUNT.$ACCOUNT $ACCOUNT
+
+### Deploy
+
+near deploy --accountId $SUBACCOUNT.$ACCOUNT --wasmFile ./target/wasm32-unknown-unknown/release/thanks.wasm --initFunction new --initArgs "{\"owner\": \"$SUBACCOUNT.$ACCOUNT\", \"allow_anonymous\":true }"
+
+Allow_anonymous is set as true there, it can be false too.
+
+
+### Call Functions examples
+
+near call $SUBACCOUNT.$ACCOUNT list '{}' --account-id "$SUBACCOUNT.$ACCOUNT"
+
+near call $SUBACCOUNT.$ACCOUNT summarize '{}' --account-id $SUBACCOUNT.$ACCOUNT
+
+near call $SUBACCOUNT.$ACCOUNT say '{"message": "Hello", "anonymous": true}' --account-id $SUBACCOUNT.$ACCOUNT
