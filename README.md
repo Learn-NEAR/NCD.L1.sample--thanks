@@ -58,7 +58,7 @@ rustup target add wasm32-unknown-unknown --toolchain nightly
 
 export ACCOUNT="your-account-id.testnet"
 
-export SUBACCOUNT="your-subaccount-name.your-account-id.testnet"
+export SUBACCOUNT="your-subaccount-name"
 
 Here's an example: Let's say I have a master account called 'someone.testnet' and want to create a subaccount name 'rust-tests'. The end result will be 'rust-tests.someone.testnet'. In that case we use "someone.testnet" for ACCOUNT, "rust-tests" for SUBACCOUNT.
 
