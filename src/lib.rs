@@ -46,7 +46,7 @@ impl Contract{
     /// Initialize contract with owner ID and other config data
     /// (note: this method is called "constructor" in the singleton contract code)
     #[init]
-    pub fn new(
+    pub fn init(
         owner: AccountId,
         allow_anonymous: bool,
     ) -> Self{
