@@ -51,7 +51,7 @@ pub fn transfer() -> ()
 
 To deploy the contract for development, follow these steps:
 
-1. clone this repo locally: git clone --branch near-sdk-rs this-repository-url.git
+1. clone this repo locally: `git clone --branch near-sdk-rs this-repository-url.git`
 2. install [rust](https://www.rust-lang.org/)
 3. allow rust to compile webassembly with `rustup target add wasm32-unknown-unknown --toolchain nightly`
 4. set your account name in ./scripts/.env
@@ -85,12 +85,12 @@ It is recommended that you deploy the contract to a subaccount under your MainNe
 1. clone this repo locally
 2. run `./scripts/x-deploy.sh` to rebuild, deploy and initialize the contract to a target account
 
-   requires the following environment variables
+   requires the following environment variables ('./scripts/.env')
    - `NEAR_ENV`: Either `testnet` or `mainnet`
    - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
 
 3. run `./scripts/x-remove.sh` to delete the account
 
-   requires the following environment variables
+   requires the following environment variables ('./scripts/.env')
    - `NEAR_ENV`: Either `testnet` or `mainnet`
    - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
