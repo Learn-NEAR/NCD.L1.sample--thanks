@@ -12,46 +12,36 @@ Any content produced by NEAR, or developer resources that NEAR provides, are for
 
 ## Contract
 
-```ts
+```rs
 // ------------------------------------
 // contract initialization
 // ------------------------------------
 
-/**
- * initialize contract with owner ID and other config data
- *
- * (note: this method is called "constructor" in the singleton contract code)
- */
-function init(owner: AccountId, allow_anonymous: bool = true): void
+/// Initialize contract with owner ID and other config data
+/// (note: this method is called "constructor" in the singleton contract code)
+pub fn init(owner: AccountId, allow_anonymous: bool) -> Self
 
 // ------------------------------------
 // public methods
 // ------------------------------------
 
-/**
- * give thanks to the owner of the contract
- * and optionally attach tokens
- */
-function say(message: string, anonymous: bool): bool
+/// Give thanks to the owner of the contract and 
+/// optionally attach tokens.
+pub fn say(message: String, anonymous: bool) -> bool
 
 // ------------------------------------
 // owner methods
 // ------------------------------------
 
-/**
- * show all messages and users
- */
-function list(): Array<Message>
+/// Show all messages and users.
+pub fn list() -> Vec<Message> 
 
-/**
- * generate a summary report
- */
-function summarize(): Contract
 
-/**
- * transfer received funds to owner account
- */
-function transfer(): void
+/// Generate a summary report.
+pub fn summarize() -> Contract
+
+/// Transfer received funds to owner account.
+pub fn transfer() -> ()
 ```
 
 
@@ -61,9 +51,14 @@ function transfer(): void
 
 To deploy the contract for development, follow these steps:
 
-1. clone this repo locally
-2. run `yarn` to install dependencies
-3. run `./scripts/1.dev-deploy.sh` to deploy the contract (this uses `near dev-deploy`)
+1. clone this repo locally: `git clone --branch near-sdk-rs this-repository-url.git`
+2. install [rust](https://www.rust-lang.org/)
+3. allow rust to compile webassembly with `rustup target add wasm32-unknown-unknown --toolchain nightly`
+4. set your account name in ./scripts/.env
+5. run `./scripts/1.testnet-deploy.sh` to deploy the contract (this deploys to the testnet, needs to be logged in)
+6. check the scripts to see the cli used (The only lines that matter are the ones that start with 'near')
+7. check ./src for the rust implementation of the contracts (lib.rs is where the contract is implemented)
+8. Cargo.toml is where we declare the dependencies that we need
 
 **Your contract is now ready to use.**
 
@@ -90,12 +85,12 @@ It is recommended that you deploy the contract to a subaccount under your MainNe
 1. clone this repo locally
 2. run `./scripts/x-deploy.sh` to rebuild, deploy and initialize the contract to a target account
 
-   requires the following environment variables
+   requires the following environment variables ('./scripts/.env')
    - `NEAR_ENV`: Either `testnet` or `mainnet`
    - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
 
 3. run `./scripts/x-remove.sh` to delete the account
 
-   requires the following environment variables
+   requires the following environment variables ('./scripts/.env')
    - `NEAR_ENV`: Either `testnet` or `mainnet`
    - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
