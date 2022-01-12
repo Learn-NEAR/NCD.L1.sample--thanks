@@ -3,14 +3,8 @@
 
 if rustup -V; 
     then echo "Rustup is installed"; 
-    else echo "Rustup not detected" | exit 1;
+    else echo "Rustup not detected" & exit 1;
 fi
-
-if [ ! < grep 'wasm32-unknown-unknown' < rustup target list ]; 
-    then rustup target add wasm32-unknown-unknown --toolchain nightly; 
-    else echo "Wasm is already installed"; 
-fi
-
 
 
 # load environment variables
@@ -19,22 +13,22 @@ if [ -f './scripts/.env' ];
     else echo 'Failed to find ./scripts/.env file';
 fi
 
-[ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable" && exit 1
 [ -z "$OWNER" ] && echo "Missing \$OWNER environment variable" && exit 1
 
-echo "deleting $CONTRACT and setting $OWNER as beneficiary"
+echo "deleting thanks.$OWNER and setting $OWNER as beneficiary"
 echo
-near delete $CONTRACT $OWNER
+near delete thanks.$OWNER $OWNER
 
-echo "creating $CONTRACT and setting $OWNER as master, sending 100 (fake) Near to it"
+echo "creating thanks.$OWNER and setting $OWNER as master, sending 90 (fake) Near to it"
 echo
 
-near create-account $CONTRACT --masterAccount $OWNER --initialBalance 100
+# Will exit if create-account returns false
+near create-account thanks.$OWNER --masterAccount $OWNER --initialBalance 90 | exit 1
 
-echo --------------------------------------------
-echo
-echo "cleaning up the /neardev folder"
-echo
+# echo --------------------------------------------
+# echo
+# echo "cleaning up the /neardev folder"
+# echo
 # rm -rf ./neardev
 
 # exit on first error after this point to avoid redeploying with successful build
@@ -50,7 +44,7 @@ echo --------------------------------------------
 echo
 echo "redeploying the contract"
 echo
-near deploy --accountId $CONTRACT --wasmFile ./target/wasm32-unknown-unknown/release/thanks.wasm --initFunction init --initArgs "{\"owner\": \"$CONTRACT\", \"allow_anonymous\":true }"
+near deploy --accountId thanks.$OWNER --wasmFile ./target/wasm32-unknown-unknown/release/thanks.wasm --initFunction init --initArgs "{\"owner\": \"$OWNER\", \"allow_anonymous\":true }"
 
 # echo --------------------------------------------
 # echo run the following commands

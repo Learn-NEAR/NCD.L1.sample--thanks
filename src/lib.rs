@@ -68,6 +68,7 @@ impl Contract{
 
     /// Give thanks to the owner of the contract and 
     /// optionally attach tokens.
+    #[payable]
     pub fn say(
         &mut self,
         message: String,

@@ -44,54 +44,53 @@ pub fn summarize() -> Contract
 pub fn transfer() -> ()
 ```
 
-## Usage(To do)
-Scripts still need to be updated to a format that doesn't require yarn...
 
-### Add wasm32-unknown-unknown to rust
+## Usage
 
-This only needs to be done once for every rustup install:
+### Development
 
-rustup target add wasm32-unknown-unknown --toolchain nightly
+To deploy the contract for development, follow these steps:
 
+1. clone this repo locally: git clone --branch near-sdk-rs this-repository-url.git
+2. install [rust](https://www.rust-lang.org/)
+3. allow rust to compile webassembly with `rustup target add wasm32-unknown-unknown --toolchain nightly`
+4. set your account name in ./scripts/.env
+5. run `./scripts/1.testnet-deploy.sh` to deploy the contract (this deploys to the testnet, needs to be logged in)
+6. check the scripts to see the cli used (The only lines that matter are the ones that start with 'near')
+7. check ./src for the rust implementation of the contracts (lib.rs is where the contract is implemented)
+8. Cargo.toml is where we declare the dependencies that we need
 
-### Env variables
+**Your contract is now ready to use.**
 
-export ACCOUNT="your-account-id.testnet"
+To use the contract you can do any of the following:
 
-export SUBACCOUNT="your-subaccount-name"
+_Public scripts_
 
-Here's an example: Let's say I have a master account called 'someone.testnet' and want to create a subaccount name 'rust-tests'. The end result will be 'rust-tests.someone.testnet'. In that case we use "someone.testnet" for ACCOUNT, "rust-tests" for SUBACCOUNT.
+```sh
+2.say-thanks.sh         # post a message saying thank you, optionally attaching NEAR tokens
+2.say-anon-thanks.sh    # post an anonymous message (otherwise same as above)
+```
 
+_Owner scripts_
 
-### Compile
+```sh
+o-report.sh             # generate a summary report of the contract state
+o-transfer.sh           # transfer received funds to the owner account
+```
 
-cargo +nightly build --target wasm32-unknown-unknown --release
+### Production
 
-### Login to NEAR
+It is recommended that you deploy the contract to a subaccount under your MainNet account to make it easier to identify you as the owner
 
-near login
+1. clone this repo locally
+2. run `./scripts/x-deploy.sh` to rebuild, deploy and initialize the contract to a target account
 
-### Create account to deploy this contract
+   requires the following environment variables
+   - `NEAR_ENV`: Either `testnet` or `mainnet`
+   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
 
-near create-account $SUBACCOUNT.$ACCOUNT --masterAccount $ACCOUNT --initialBalance 100
+3. run `./scripts/x-remove.sh` to delete the account
 
-### Delete account 
-
-Only when there's no need for the contract. transfer remaining near to $ACCOUNT.
-
-near delete $SUBACCOUNT.$ACCOUNT $ACCOUNT
-
-### Deploy
-
-near deploy --accountId $SUBACCOUNT.$ACCOUNT --wasmFile ./target/wasm32-unknown-unknown/release/thanks.wasm --initFunction new --initArgs "{\"owner\": \"$SUBACCOUNT.$ACCOUNT\", \"allow_anonymous\":true }"
-
-Allow_anonymous is set as true there, it can be false too.
-
-
-### Call Functions examples
-
-near call $SUBACCOUNT.$ACCOUNT list '{}' --account-id "$SUBACCOUNT.$ACCOUNT"
-
-near call $SUBACCOUNT.$ACCOUNT summarize '{}' --account-id $SUBACCOUNT.$ACCOUNT
-
-near call $SUBACCOUNT.$ACCOUNT say '{"message": "Hello", "anonymous": true}' --account-id $SUBACCOUNT.$ACCOUNT
+   requires the following environment variables
+   - `NEAR_ENV`: Either `testnet` or `mainnet`
+   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`

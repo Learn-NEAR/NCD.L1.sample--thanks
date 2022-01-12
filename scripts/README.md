@@ -1,3 +1,8 @@
+# Setting up
+
+
+
+
 ## Setting up your terminal
 
 The scripts in this folder support a simple demonstration of the contract.
@@ -27,6 +32,9 @@ It uses the following setup:
 ### Terminal **A**
 
 *This window is used to compile, deploy and control the contract*
+
+Note: Setting environment variables in .env might be easier.
+
 - Environment
   ```sh
   export CONTRACT=        # depends on deployment
@@ -41,7 +49,7 @@ It uses the following setup:
 
   _Owner scripts_
   ```sh
-  1.dev-deploy.sh         # cleanup, compile and deploy contract
+  1.testnet-deploy.sh         # cleanup, compile and deploy contract
   o-report.sh             # generate a summary report of the contract state
   o-transfer.sh           # transfer received funds to the owner account
   ```
