@@ -8,7 +8,6 @@ const FUND_SUBACCOUNT = 'myfund';
 
 function initializeContract(): void {
   VMContext.setPredecessor_account_id(REGISTRY_OWNER_ACCOUNT_ID);
-  VMContext.setSigner_account_id(FUND_OWNER_ACCOUNT_ID);
   VMContext.setAttached_deposit(util.MIN_ACCOUNT_BALANCE);
   contract.init();
 }
@@ -16,7 +15,7 @@ function initializeContract(): void {
 /**
  * == UNIT TESTS ==============================================================
  */
-describe('Fund', () => {
+describe('Fund Registry', () => {
   describe('init', () => {
     it('prevents double initialization', () => {
       initializeContract()
@@ -25,7 +24,6 @@ describe('Fund', () => {
 
     it("requires a minimum balance", () => {
       VMContext.setPredecessor_account_id(REGISTRY_OWNER_ACCOUNT_ID);
-      VMContext.setSigner_account_id(FUND_OWNER_ACCOUNT_ID);
       expect(() => { contract.init() }).toThrow("Minimum account balance must be attached to initialize this contract (3 NEAR)")
     });
   });
@@ -33,10 +31,10 @@ describe('Fund', () => {
   describe('view methods', () => {
     beforeEach(initializeContract);
 
-    describe('get_fund', () => {
+    describe('get_registry', () => {
       it('returns an object with owner', () => {
-        const fund = contract.get_fund();
-        expect(fund.owner).toBe(FUND_OWNER_ACCOUNT_ID);
+        const registry = contract.get_registry();
+        expect(registry.owner).toBe(REGISTRY_OWNER_ACCOUNT_ID);
       })
     })
 

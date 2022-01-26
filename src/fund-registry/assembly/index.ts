@@ -18,6 +18,10 @@ export function init(): void {
   logging.log("FundRegistry was created")
 }
 
+export function get_registry(): FundRegistry {
+  return FundRegistry.get();
+}
+
 export function get_fund_index(owner: AccountId): AccountId[] {
   return FundRegistry.get_fund_index(owner);
 }
