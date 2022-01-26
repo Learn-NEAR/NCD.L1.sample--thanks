@@ -1,4 +1,4 @@
-import { ContractPromiseBatch, context, base58, u128, env, storage, logging, ContractPromise } from "near-sdk-as"
+import { ContractPromiseBatch, context, base58, u128, env, logging, ContractPromise } from "near-sdk-as"
 import { MIN_ACCOUNT_BALANCE, AccountId, XCC_GAS } from "../../utils";
 import { FundRegistry, FundInitArgs, OnFundCreatedArgs, FundDeleteArgs, OnFundDeletedArgs } from "./models";
 
@@ -35,7 +35,9 @@ export function create_fund(subaccount: AccountId): void {
 
   logging.log("attempting to create fund")
 
-  ContractPromiseBatch.create(accountId)
+  ContractPromiseBatch
+    // acting on fund
+    .create(accountId)
     .create_account()
     .deploy_contract(Uint8Array.wrap(changetype<ArrayBuffer>(FUND_CODE)))
     .add_full_access_key(base58.decode(context.senderPublicKey))
@@ -45,6 +47,8 @@ export function create_fund(subaccount: AccountId): void {
       context.attachedDeposit,
       XCC_GAS
     )
+    // acting on fund registry
+    .then(context.contractName)
     .function_call(
       "on_fund_created",
       new OnFundCreatedArgs(context.predecessor, subaccount),
@@ -54,6 +58,7 @@ export function create_fund(subaccount: AccountId): void {
 }
 
 export function on_fund_created(owner: AccountId, subaccount: AccountId): void {
+  logging.log('in on_fund_created');
   let results = ContractPromise.getResults();
   let fundCreated = results[0];
 
@@ -67,6 +72,7 @@ export function on_fund_created(owner: AccountId, subaccount: AccountId): void {
     case 1:
       // promise result is complete and successful
       logging.log(`Fund creation for [${full_account_for(subaccount)}] succeeded`)
+      logging.log('attempting to save fund in owner index');
       FundRegistry.create_fund(owner, subaccount);
       break;
     case 2:

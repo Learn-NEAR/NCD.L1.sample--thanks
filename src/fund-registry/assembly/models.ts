@@ -55,14 +55,17 @@ export class FundInitArgs {
   constructor(public owner: AccountId) {}
 }
 
+@nearBindgen
 export class OnFundCreatedArgs {
   constructor(public owner: AccountId, public subaccount: AccountId) {}
 }
 
+@nearBindgen
 export class FundDeleteArgs {
   constructor() {}
 }
 
+@nearBindgen
 export class OnFundDeletedArgs {
   constructor(public owner: AccountId, public subaccount: AccountId) {}
 }

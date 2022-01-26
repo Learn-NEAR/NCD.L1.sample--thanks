@@ -13,7 +13,7 @@ export function init(): void {
   );
 
   // create the museum using incoming metadata
-  Fund.create(context.predecessor);
+  Fund.create(context.sender);
 
   logging.log("Fund was created")
 }
