@@ -96,13 +96,17 @@ export function delete_fund(subaccount: AccountId): void {
 
   logging.log("attempting to delete fund")
 
-  ContractPromiseBatch.create(accountId)
+  ContractPromiseBatch
+    // acting on fund
+    .create(accountId)
     .function_call(
       "delete_fund",
       new FundDeleteArgs(),
       u128.Zero,
       XCC_GAS
     )
+    // acting on fund registry
+    .then(context.contractName)
     .function_call(
       "on_fund_deleted",
       new OnFundDeletedArgs(context.predecessor, subaccount),
@@ -125,7 +129,7 @@ export function on_fund_deleted(owner: AccountId, subaccount: AccountId): void {
     case 1:
       // promise result is complete and successful
       logging.log(`Fund deletion for [${full_account_for(subaccount)}] succeeded`)
-      FundRegistry.create_fund(owner, subaccount);
+      FundRegistry.delete_fund(owner, subaccount);
       break;
     case 2:
       // promise result is complete and failed

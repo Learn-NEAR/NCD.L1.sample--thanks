@@ -44,9 +44,13 @@ export class FundRegistry {
   }
 
   static delete_fund(owner: AccountId, subaccount: AccountId): void {
-    const funds = this.get_fund_index(owner)
-      .filter(name => name === subaccount);
-    fundsByOwner.set(owner, funds);
+    const fundIndex = this.get_fund_index(owner)
+    const nextFundIndex: string[] = [];
+    for (let i = 0; i < fundIndex.length; i++) {
+      if (fundIndex[i] == subaccount) continue;
+      nextFundIndex.push(fundIndex[i]);
+    }
+    fundsByOwner.set(owner, nextFundIndex);
   }
 }
 
