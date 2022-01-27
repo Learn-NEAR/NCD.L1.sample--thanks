@@ -1,6 +1,7 @@
 import { VMContext, PersistentMap } from "near-sdk-as";
 import * as util from "../../utils";
 import * as contract from "../assembly";
+import { fundsByOwner } from '../assembly/models';
 
 const REGISTRY_OWNER_ACCOUNT_ID = "rita";
 const FUND_OWNER_ACCOUNT_ID = "danny";
@@ -39,13 +40,11 @@ describe('Fund Registry', () => {
     })
 
     describe('get_fund_index', () => {
-      // Couldn't get this to work
-      // it("returns the index of funds for a user", () => {
-      //   const fundsByOwner = new PersistentMap<util.AccountId, string[]>('f');
-      //   fundsByOwner.set(FUND_OWNER_ACCOUNT_ID, [FUND_SUBACCOUNT]);
-      //   const fund_index = contract.get_fund_index(FUND_OWNER_ACCOUNT_ID);
-      //   expect(fund_index).toContain(FUND_SUBACCOUNT);
-      // })
+      it("returns the index of funds for a user", () => {
+        fundsByOwner.set(FUND_OWNER_ACCOUNT_ID, [FUND_SUBACCOUNT]);
+        const fund_index = contract.get_fund_index(FUND_OWNER_ACCOUNT_ID);
+        expect(fund_index).toStrictEqual([FUND_SUBACCOUNT]);
+      })
     })
   })
 })

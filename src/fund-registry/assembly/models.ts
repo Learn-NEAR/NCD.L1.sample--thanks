@@ -74,4 +74,4 @@ export class OnFundDeletedArgs {
   constructor(public owner: AccountId, public subaccount: AccountId) {}
 }
 
-const fundsByOwner = new PersistentMap<AccountId, string[]>('f');
+export const fundsByOwner = new PersistentMap<AccountId, string[]>('f');

@@ -3,16 +3,13 @@ import { MIN_ACCOUNT_BALANCE, AccountId, XCC_GAS, assert_self, assert_single_pro
 import { Fund, Payer, Payee } from "./models";
 
 export function init(): void {
-  // contract may only be initialized once
   assert(!Fund.exists(), "Contract is already initialized.");
 
-  // storing meme metadata requires some storage staking (balance locked to offset cost of data storage)
   assert(
     u128.ge(context.attachedDeposit, MIN_ACCOUNT_BALANCE),
     "Minimum account balance must be attached to initialize this contract (3 NEAR)"
   );
 
-  // create the museum using incoming metadata
   Fund.create(context.sender);
 
   logging.log("Fund was created")
