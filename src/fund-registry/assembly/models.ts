@@ -6,13 +6,9 @@ export const FUND_REGISTRY_STORAGE_KEY = 'FNDRG';
 @nearBindgen
 export class FundRegistry {
   created_at: Timestamp = context.blockTimestamp;
-  
-  constructor(
-    public owner: AccountId
-  ) { }
 
-  static create(owner: AccountId): void {
-    this.save(new FundRegistry(owner))
+  static create(): void {
+    this.save(new FundRegistry())
   }
 
   static exists(): bool {

@@ -3,7 +3,7 @@ import { MIN_ACCOUNT_BALANCE, AccountId, XCC_GAS } from "../../utils";
 import { FundRegistry, FundInitArgs, OnFundCreatedArgs, FundDeleteArgs, OnFundDeletedArgs } from "./models";
 
 // import meme contract bytecode as StaticArray
-const FUND_CODE = includeBytes("../../../build/debug/fund.wasm")
+const FUND_CODE = includeBytes("../../../build/release/fund.wasm");
 
 export function init(): void {
   assert(!FundRegistry.exists(), "Contract is already initialized.");
@@ -13,7 +13,7 @@ export function init(): void {
     "Minimum account balance must be attached to initialize this contract (3 NEAR)"
   );
 
-  FundRegistry.create(context.predecessor);
+  FundRegistry.create();
 
   logging.log("FundRegistry was created")
 }
