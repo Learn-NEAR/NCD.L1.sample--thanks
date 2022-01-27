@@ -2,6 +2,9 @@ import { ContractPromiseBatch, context, u128, logging } from "near-sdk-as"
 import { MIN_ACCOUNT_BALANCE, AccountId, XCC_GAS, assert_self, assert_single_promise_success } from "../../utils";
 import { Fund, Payer, Payee } from "./models";
 
+/**
+ * == INITIALIZE CONTRACT ======================================================
+ */
 export function init(): void {
   assert(!Fund.exists(), "Contract is already initialized.");
 
@@ -15,6 +18,9 @@ export function init(): void {
   logging.log("Fund was created")
 }
 
+/**
+ * == VIEW FUNCTIONS ==========================================================
+ */
 export function get_fund(): Fund {
   return Fund.get();
 }
@@ -35,6 +41,9 @@ export function get_payee(accountId: AccountId): Payee {
   return Payee.get(accountId);
 }
 
+/**
+ * == CHANGE FUNCTIONS ========================================================
+ */
 export function create_payers(accountIds: AccountId[], balance: u128): void {
   assert_is_owner(context.predecessor);
   Payer.create(accountIds, balance);
@@ -76,8 +85,10 @@ export function transfer(recipient: AccountId, amount: u128): void {
   Fund.adjust_transfer_balances(context.predecessor, recipient, amount);
 
   ContractPromiseBatch
+    // transfer money
     .create(recipient)
     .transfer(amount)
+    // callback
     .then(context.contractName)
     .function_call("on_transfer_complete", '{}', u128.Zero, XCC_GAS)
 }
@@ -102,6 +113,9 @@ export function delete_fund(): void {
     .delete_account(fund.owner);
 }
 
+/**
+ * == HELPERS =================================================================
+ */
 function assert_is_owner(account_id: AccountId): void {
   assert(Fund.is_owner(account_id), 'Unauthorized');
 }

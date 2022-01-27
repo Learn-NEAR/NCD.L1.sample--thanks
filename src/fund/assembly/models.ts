@@ -1,8 +1,14 @@
 import { context, storage, PersistentSet, u128, PersistentMap } from "near-sdk-as"
 import { AccountId, Timestamp } from "../../utils";
 
+/**
+ * == CONSTANTS ===============================================================
+ */
 export const FUND_STORAGE_KEY = 'FND';
 
+/**
+ * == MODELS ==================================================================
+ */
 @nearBindgen
 export class Payer {
   constructor(public balance: u128) {}
@@ -155,11 +161,17 @@ export class Fund {
   }
 }
 
+/**
+ * == DATA STRUCTURES =========================================================
+ */
 export const payer_index = new PersistentSet<AccountId>('pri');
 export const payer_records = new PersistentMap<AccountId, Payer>('pr');
 export const payee_index = new PersistentSet<AccountId>('pei');
 export const payee_records = new PersistentMap<AccountId, Payee>('pe');
 
+/**
+ * == HELPERS =================================================================
+ */
 function assert_sufficient_funds(balance: u128, deduction_amount: u128): void {
   assert(u128.ge(balance, deduction_amount), 'Insufficient balance');
 }

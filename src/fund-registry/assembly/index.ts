@@ -1,10 +1,15 @@
 import { ContractPromiseBatch, context, base58, u128, env, logging, ContractPromise } from "near-sdk-as"
-import { MIN_ACCOUNT_BALANCE, AccountId, XCC_GAS } from "../../utils";
+import { MIN_ACCOUNT_BALANCE, AccountId, XCC_GAS, assert_self } from "../../utils";
 import { FundRegistry, FundInitArgs, OnFundCreatedArgs, FundDeleteArgs, OnFundDeletedArgs } from "./models";
 
-// import meme contract bytecode as StaticArray
+/**
+ * == CONSTANTS ===============================================================
+ */
 const FUND_CODE = includeBytes("../../../build/release/fund.wasm");
 
+/**
+ * == INITIALIZE CONTRACT ======================================================
+ */
 export function init(): void {
   assert(!FundRegistry.exists(), "Contract is already initialized.");
 
@@ -18,6 +23,9 @@ export function init(): void {
   logging.log("FundRegistry was created")
 }
 
+/**
+ * == VIEW FUNCTIONS ==========================================================
+ */
 export function get_registry(): FundRegistry {
   return FundRegistry.get();
 }
@@ -26,21 +34,26 @@ export function get_fund_index(owner: AccountId): AccountId[] {
   return FundRegistry.get_fund_index(owner);
 }
 
+/**
+ * == CHANGE FUNCTIONS ========================================================
+ */
 export function create_fund(subaccount: AccountId): void {
-  // storing metadata requires some storage staking (balance locked to offset cost of data storage)
   assert(
     u128.ge(context.attachedDeposit, MIN_ACCOUNT_BALANCE),
-    "Minimum account balance must be attached to initialize a meme (3 NEAR)"
+    "Minimum account balance must be attached to initialize a fund (3 NEAR)"
   );
 
   const accountId = full_account_for(subaccount)
 
-  assert(env.isValidAccountID(accountId), "Fund name must be valid NEAR account name");
+  assert(
+    env.isValidAccountID(accountId),
+    "Fund name must be valid NEAR account name"
+  );
 
   logging.log("attempting to create fund")
 
   ContractPromiseBatch
-    // acting on fund
+    // deploy and initialize fund
     .create(accountId)
     .create_account()
     .deploy_contract(Uint8Array.wrap(changetype<ArrayBuffer>(FUND_CODE)))
@@ -51,7 +64,7 @@ export function create_fund(subaccount: AccountId): void {
       context.attachedDeposit,
       XCC_GAS
     )
-    // acting on fund registry
+    // callback
     .then(context.contractName)
     .function_call(
       "on_fund_created",
@@ -62,6 +75,7 @@ export function create_fund(subaccount: AccountId): void {
 }
 
 export function on_fund_created(owner: AccountId, subaccount: AccountId): void {
+  assert_self();
   logging.log('in on_fund_created');
   let results = ContractPromise.getResults();
   let fundCreated = results[0];
@@ -101,7 +115,7 @@ export function delete_fund(subaccount: AccountId): void {
   logging.log("attempting to delete fund")
 
   ContractPromiseBatch
-    // acting on fund
+    // delete fund account
     .create(accountId)
     .function_call(
       "delete_fund",
@@ -109,7 +123,7 @@ export function delete_fund(subaccount: AccountId): void {
       u128.Zero,
       XCC_GAS
     )
-    // acting on fund registry
+    // callback
     .then(context.contractName)
     .function_call(
       "on_fund_deleted",
@@ -120,6 +134,7 @@ export function delete_fund(subaccount: AccountId): void {
 }
 
 export function on_fund_deleted(owner: AccountId, subaccount: AccountId): void {
+  assert_self();
   let results = ContractPromise.getResults();
   let fundDeleted = results[0];
 
@@ -146,6 +161,9 @@ export function on_fund_deleted(owner: AccountId, subaccount: AccountId): void {
   }
 }
 
+/**
+ * == HELPERS =================================================================
+ */
 function full_account_for(subaccount: string): string {
   return `${subaccount}.${context.contractName}`;
 }

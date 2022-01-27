@@ -1,8 +1,14 @@
 import { context, storage, PersistentMap } from "near-sdk-as"
 import { AccountId, Timestamp } from "../../utils";
 
+/**
+ * == CONSTANTS ===============================================================
+ */
 export const FUND_REGISTRY_STORAGE_KEY = 'FNDRG';
 
+/**
+ * == MODELS ==================================================================
+ */
 @nearBindgen
 export class FundRegistry {
   created_at: Timestamp = context.blockTimestamp;
@@ -50,6 +56,10 @@ export class FundRegistry {
   }
 }
 
+
+/**
+ * == XCC ARGUMENT WRAPPERS ===================================================
+ */
 @nearBindgen
 export class FundInitArgs {
   constructor(public owner: AccountId) {}
@@ -70,4 +80,7 @@ export class OnFundDeletedArgs {
   constructor(public owner: AccountId, public subaccount: AccountId) {}
 }
 
+/**
+ * == DATA STRUCTURES =========================================================
+ */
 export const fundsByOwner = new PersistentMap<AccountId, string[]>('f');
