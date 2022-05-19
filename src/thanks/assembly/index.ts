@@ -22,6 +22,10 @@ export class Contract {
     }
   }
 
+  get_owner(): AccountId {
+    return this.owner
+  }
+
   @mutateState()
   say(message: string, anonymous: bool = false): bool {
     // guard against too much money being deposited to this account in beta
