@@ -8,11 +8,11 @@ Of course keep in mind that your signing account will be visible on the blockcha
 
 ## ⚠️ Warning
 
-Any content produced by NEAR, or developer resources that NEAR provides, are for educational and inspiration purposes only.  NEAR does not encourage, induce or sanction the deployment of any such applications in violation of applicable laws or regulations.
+Any content produced by NEAR, or developer resources that NEAR provides, are for educational and inspiration purposes only. NEAR does not encourage, induce or sanction the deployment of any such applications in violation of applicable laws or regulations.
 
 ## Contract
 
-```ts
+```typescript
 // ------------------------------------
 // contract initialization
 // ------------------------------------
@@ -22,7 +22,7 @@ Any content produced by NEAR, or developer resources that NEAR provides, are for
  *
  * (note: this method is called "constructor" in the singleton contract code)
  */
-function init(owner: AccountId, allow_anonymous: bool = true): void
+function init(owner: AccountId, allow_anonymous: bool = true): void;
 
 // ------------------------------------
 // public methods
@@ -32,7 +32,7 @@ function init(owner: AccountId, allow_anonymous: bool = true): void
  * give thanks to the owner of the contract
  * and optionally attach tokens
  */
-function say(message: string, anonymous: bool): bool
+function say(message: string, anonymous: bool): bool;
 
 // ------------------------------------
 // owner methods
@@ -41,19 +41,18 @@ function say(message: string, anonymous: bool): bool
 /**
  * show all messages and users
  */
-function list(): Array<Message>
+function list(): Array<Message>;
 
 /**
  * generate a summary report
  */
-function summarize(): Contract
+function summarize(): Contract;
 
 /**
  * transfer received funds to owner account
  */
-function transfer(): void
+function transfer(): void;
 ```
-
 
 ## Usage
 
@@ -62,40 +61,9 @@ function transfer(): void
 To deploy the contract for development, follow these steps:
 
 1. clone this repo locally
-2. run `yarn` to install dependencies
-3. run `./scripts/1.dev-deploy.sh` to deploy the contract (this uses `near dev-deploy`)
+2. run `npm i` to install dependencies
+3. run `npm run deploy` to deploy the contract (this uses `near dev-deploy`)
 
 **Your contract is now ready to use.**
 
-To use the contract you can do any of the following:
-
-_Public scripts_
-
-```sh
-2.say-thanks.sh         # post a message saying thank you, optionally attaching NEAR tokens
-2.say-anon-thanks.sh    # post an anonymous message (otherwise same as above)
-```
-
-_Owner scripts_
-
-```sh
-o-report.sh             # generate a summary report of the contract state
-o-transfer.sh           # transfer received funds to the owner account
-```
-
-### Production
-
-It is recommended that you deploy the contract to a subaccount under your MainNet account to make it easier to identify you as the owner
-
-1. clone this repo locally
-2. run `./scripts/x-deploy.sh` to rebuild, deploy and initialize the contract to a target account
-
-   requires the following environment variables
-   - `NEAR_ENV`: Either `testnet` or `mainnet`
-   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
-
-3. run `./scripts/x-remove.sh` to delete the account
-
-   requires the following environment variables
-   - `NEAR_ENV`: Either `testnet` or `mainnet`
-   - `OWNER`: The owner of the contract and the parent account.  The contract will be deployed to `thanks.$OWNER`
+To see how to use the contract you can check out the integration tests for example calls.
