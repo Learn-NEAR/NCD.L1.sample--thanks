@@ -1,21 +1,18 @@
 {
-  "name": "starter--assemblyscript",
-  "version": "0.0.1",
-  "description": "Starter project for writing AssemblyScript contracts for NEAR Protocol",
+  "name": "thanks",
+  "version": "1.0.0",
+  "license": "(MIT AND Apache-2.0)",
   "scripts": {
-    "dev": "watch -d -n 1 'clear && yarn test:unit'",
-    "asp": "asp --verbose --nologo",
-    "test:unit": "yarn asp -f unit.spec",
-    "build": "asb --target debug",
-    "build:release": "asb",
-    "test": "yarn build:release && yarn test:unit && yarn test:simulate",
-    "test:simulate": "cargo test -- --nocapture",
-    "clean": "rm -rf ./build && rm -rf ./neardev && rm -rf ./target"
+    "deploy": "cd contract && npm run deploy",
+    "build": "npm run build:contract",
+    "build:contract": "cd contract && npm run build",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "cd contract && npm test",
+    "test:integration": "npm run build:contract && cd integration-tests && npm test  -- -- \"./contract/build/hello_near.wasm\"",
+    "deps-install": "npm install && cd contract && npm install && cd ../integration-tests && npm install && cd .."
   },
-  "keywords": [],
-  "author": "hello@near.org",
-  "license": "ISC",
   "devDependencies": {
-    "near-sdk-as": "^3.1.0"
-  }
+    "near-cli": "^3.3.0"
+  },
+  "dependencies": {}
 }
